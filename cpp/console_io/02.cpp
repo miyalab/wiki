@@ -5,5 +5,5 @@ int main(void)
 	int i;
 	
 	cin >> i;
-	cout << i << i;
+	cout << i << std::endl;
 }
