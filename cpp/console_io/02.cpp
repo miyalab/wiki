@@ -4,6 +4,6 @@ int main(void)
 {
 	int i;
 	
-	cin >> i;
-	cout << i << std::endl;
+	std::cin >> i;
+	std::cout << i << std::endl;
 }
