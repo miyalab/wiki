@@ -27,3 +27,7 @@ unsigned float uf;    // 符号ありfloat型
 // 「const」「constexpr」「static」「extern」などがよく使われる（他にもある）
 const int ci=0;       // int型時定数
 constexpr float cf=2; // float型コンパイル時定数
+
+// 変数名の前に*を付けるとポインタ変数になる
+int *pi;              // int型ポインタ変数
+float *pf;            // float型ポインタ変数
