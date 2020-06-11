@@ -4,7 +4,7 @@ int main()
 {
   // std::cout << 出力したい変数 or 文字列;
   // std::endl は改行する処理
-  // << を付けると複数の変数or文字列を出力することができる。
+  // 「<<」 を付けると複数の変数or文字列を出力することができる。
   std::cout << "Hello World" << std::endl;
   // 「Hello World」と出力される
   
