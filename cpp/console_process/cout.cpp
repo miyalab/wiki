@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 int main()
 {
   // std::cout << 出力したい変数 or 文字列;
@@ -17,6 +18,6 @@ int main()
   
   // 表示される桁数を変更する
   std::cout << std::fixed;              // 指数表記から固定小数点表記に変更
-  std::cout << std::setprecision(15);   // 表示範囲を小数点以下15桁に変更
+  std::cout << std::setprecision(15);   // 表示範囲を小数点以下15桁に変更（iomanipが必要）
   std::cout << pi << std::endl;
 }
