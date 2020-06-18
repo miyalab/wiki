@@ -11,5 +11,5 @@ int main()
   std::string str3=str.substr(5);   // 「fghijklmn」が抽出される
   
   std::cout << str2 << std::endl;
-  std::cout << str2 << std::endl;
+  std::cout << str3 << std::endl;
 }
