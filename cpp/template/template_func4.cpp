@@ -7,7 +7,7 @@ void print(type s)
 }
 
 // std::string型だけ別処理
-templete<>
+template<>
 void print(std::string str)
 {
   std::cout << "str:"+str << std::endl;
