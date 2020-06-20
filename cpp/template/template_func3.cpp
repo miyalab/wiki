@@ -8,7 +8,7 @@ void sum_print(type a, type b)
 template<typename type1, typename type2>
 void time_print(type1 a, type2 b)
 {
-  std::cout << (type1)type1*type2 << std::endl;
+  std::cout << (type1)a*b << std::endl;
 }
 
 int main()
