@@ -1,3 +1,5 @@
+// template<typename テンプレート型>
+// テンプレート型 関数名(テンプレート型 引数名, ...){ ... }
 template <typename type>
 type sum(type a, type b)
 {
