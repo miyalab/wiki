@@ -6,6 +6,7 @@ void print(type s)
   std::cout << "num:" << s << std::endl;
 }
 
+// std::string型だけ別処理
 templete<>
 void print(std::string str)
 {
