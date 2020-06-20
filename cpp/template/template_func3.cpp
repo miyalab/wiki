@@ -15,6 +15,6 @@ int main()
 {
   int a=10;
   double b=21.5;
-  sum_print(a,b);   // ワーニングがでる（sum_printは1つの型した扱えない）
+  sum_print(a,b);   // ワーニングがでる（sum_printは1つの型しか扱えない）
   time_print(a,b);  // void time_print(int a, double b)として呼び出される
 }
