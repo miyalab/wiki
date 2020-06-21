@@ -1,15 +1,22 @@
 #include <iostream>
-
+#include <vector>
 int main()
 {
   int n,x;
+  std::vector<int> N;
   
   // n:数値 x:基数
   cin >> n >> x;
   
-  // 1桁目から順に表示していく
+  // 基数変換メイン
   while(n>0){
-    std::cout << n%x << std::endl;
+    N.push_back(n%x);
     n/=x;
   }
+  
+  // 上位桁から出力
+  for(int i=N.length();i>=0;i--){
+    std::cout << N[i];
+  }
+  std::cout << std::endl;
 }
