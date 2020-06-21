@@ -8,7 +8,7 @@ int main()
   // n:数値 x:基数
   cin >> n >> x;
   
-  // 基数変換メイン
+  // 基数変換メイン処理
   while(n>0){
     N.push_back(n%x);
     n/=x;
