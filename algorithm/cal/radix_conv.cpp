@@ -15,7 +15,7 @@ int main()
   }
   
   // 上位桁から出力
-  for(int i=N.length()-1;i>=0;i--){
+  for(int i=N.size()-1;i>=0;i--){
     std::cout << N[i];
   }
   std::cout << std::endl;
