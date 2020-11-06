@@ -208,16 +208,16 @@ textBoxRead.AppendText(serialPort.ReadExisting());
 //----------------------------------------------------------------------------------
 private static IEnumerable<string> GetSerialDeviceNames()
 {
-var pnpEntity = new ManagementClass("Win32_PnPEntity");
-var comRegex = new Regex(@"\(COM[1-9][0-9]?[0-9]?\)");                  // デバイス名に"(COM3)"などが入ってるものを探す
+    var pnpEntity = new ManagementClass("Win32_PnPEntity");
+    var comRegex = new Regex(@"\(COM[1-9][0-9]?[0-9]?\)");                  // デバイス名に"(COM3)"などが入ってるものを探す
 
-return pnpEntity
-.GetInstances()                                                     // 一覧を取得
-.Cast<ManagementObject>()
-.Select(managementObj => managementObj.GetPropertyValue("Name"))    // 名前拾ってくる
-.Where(nameObj => nameObj != null)                                  // プロパティ値が拾えないものはnullになっているので弾く
-.Select(nameObj => nameObj.ToString())                              // 文字列に直し、
-.Where(name => comRegex.IsMatch(name));                             // 正規表現で最後のフィルタリング
+    return pnpEntity
+        .GetInstances()                                                     // 一覧を取得
+        .Cast<ManagementObject>()
+        .Select(managementObj => managementObj.GetPropertyValue("Name"))    // 名前拾ってくる
+        .Where(nameObj => nameObj != null)                                  // プロパティ値が拾えないものはnullになっているので弾く
+        .Select(nameObj => nameObj.ToString())                              // 文字列に直し、
+        .Where(name => comRegex.IsMatch(name));                             // 正規表現で最後のフィルタリング
 }
 
 //----------------------------------------------------------------------------------
@@ -225,26 +225,26 @@ return pnpEntity
 //----------------------------------------------------------------------------------
 private void deviceList_Update()
 {
-// デバイスリスト更新
-comboBoxDevices.Items.Clear();
-foreach (string Ports in GetSerialDeviceNames())
-{
-comboBoxDevices.Items.Add(Ports);
-}
+    // デバイスリスト更新
+    comboBoxDevices.Items.Clear();
+    foreach (string Ports in GetSerialDeviceNames())
+    {
+        comboBoxDevices.Items.Add(Ports);
+    }
 
-// デバイスあり
-if (comboBoxDevices.Items.Count != 0)
-{
-// 接続ボタン許可
-buttonConnect.Enabled = true;
-comboBoxDevices.SelectedIndex = 0;
-}
-// デバイスなし
-else
-{
-// 接続ボタン入力禁止
-buttonConnect.Enabled = false;
-}
+    // デバイスあり
+    if (comboBoxDevices.Items.Count != 0)
+    {
+        // 接続ボタン許可
+        buttonConnect.Enabled = true;
+        comboBoxDevices.SelectedIndex = 0;
+    }
+    // デバイスなし
+    else
+    {
+        // 接続ボタン入力禁止
+        buttonConnect.Enabled = false;
+    }
 }
 
 //----------------------------------------------------------------------------------
