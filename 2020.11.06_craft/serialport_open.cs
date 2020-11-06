@@ -150,6 +150,7 @@ serialSetting_Enable();
 private void buttonTrans_Click(object sender, EventArgs e)
 {
     serialPort.Write(textBoxTrans.Text + lineFeedCode);
+    textBoxTrans.Clear();
 }
 
 //----------------------------------------------------------------------------------
