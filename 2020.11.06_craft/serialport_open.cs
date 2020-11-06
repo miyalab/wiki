@@ -64,12 +64,12 @@ deviceList_Update();
 //----------------------------------------------------------------------------------
 private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
 {
-// シリアルポートオープンされている
-if(serialPort.IsOpen == true)
-{
-// シリアルポートのクローズ
-serialPort.Close();
-}
+    // シリアルポートオープンされている
+    if(serialPort.IsOpen == true)
+    {
+        // シリアルポートのクローズ
+        serialPort.Close();
+    }
 }
 
 //----------------------------------------------------------------------------------
@@ -77,9 +77,9 @@ serialPort.Close();
 //----------------------------------------------------------------------------------
 private void CopyrightToolStripMenuItem_Click(object sender, EventArgs e)
 {
-// CopyrightFormオープン
-CopyrigthForm copyrigthForm = new CopyrigthForm();
-copyrigthForm.Show();
+    // CopyrightFormオープン
+    CopyrigthForm copyrigthForm = new CopyrigthForm();
+    copyrigthForm.Show();
 }
 
 //----------------------------------------------------------------------------------
@@ -87,8 +87,8 @@ copyrigthForm.Show();
 //----------------------------------------------------------------------------------
 private void buttonGetDevicesList_Click(object sender, EventArgs e)
 {
-// デバイスリスト更新
-deviceList_Update();
+    // デバイスリスト更新
+    deviceList_Update();
 }
 
 //----------------------------------------------------------------------------------
