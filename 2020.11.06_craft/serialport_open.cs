@@ -1,287 +1,287 @@
-/ *
- *シリアル通信端末システム（SCTS）
+
+ * Serial Communication Terminal System(SCTS)
  * 
- * Copyright（c）2020 K.Miyauchi
- *このソフトウェアはMITLICENSEの下でリリースされています
+ * Copyright (c) 2020 K.Miyauchi
+ * This software is released under the MIT LICENSE
  * http://opensource.org/licenses/mit-license.php
  * 
- *ファイル：MainForm.cs
- *著者：K.Miyauchi
+ * File    : MainForm.cs
+ * Author  : K.Miyauchi
  * 
- *バージョン：1.00
- * /
+ * version : 1.00
+ */
 
-// --------------------------------------
-//パナ
-// --------------------------------------
- システムを使用する;
- システムを使用します。コレクション。ジェネリック;
- システムを使用します。データ;
- システムを使用します。IO。ポート;
- システムを使用します。Linq ;
- システムを使用します。管理;
- システムを使用します。テキスト。正規表現;
- システムを使用します。Windows。フォーム;
+//--------------------------------------
+// パッケージ
+//--------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO.Ports;
+using System.Linq;
+using System.Management;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
-// ------------------------------------------------ ------------------------------------------
-//シリアル通信端末システム
-// ------------------------------------------------ ------------------------------------------
-名前空間 SerialCommunicationTerminalSystem
-{{
-    // ------------------------------------------------ --------------------------------------
-    //メインフォーム
-    // ------------------------------------------------ --------------------------------------
-    パブリック 部分 クラス MainForm：フォーム
-    {{
-        //変数
-        プライベート 文字列 lineFeedCode  =  " \ r \ n " ;       //改行コード（送信）
+//------------------------------------------------------------------------------------------
+// Serial Communication Terminal System
+//------------------------------------------------------------------------------------------
+namespace SerialCommunicationTerminalSystem
+{
+    //--------------------------------------------------------------------------------------
+    // Main Form
+    //--------------------------------------------------------------------------------------
+    public partial class MainForm : Form
+    {
+        // メンバ変数
+        private string lineFeedCode = "\r\n";       // 改行コード（送信）
 
-        // ------------------------------------------------ ----------------------------------
-        // MainFormコンストラクタ
-        // ------------------------------------------------ ----------------------------------
-        public  MainForm（）
-        {{
-            InitializeComponent（）;
+        //----------------------------------------------------------------------------------
+        // MainForm コンストラクタ
+        //----------------------------------------------------------------------------------
+        public MainForm()
+        {
+            InitializeComponent();
         }
 
-        // ------------------------------------------------ ----------------------------------
-        // MainForm押し時の処理
-        // ------------------------------------------------ ----------------------------------
-        private  void  MainForm_Load（オブジェクト 送信者、EventArgs  e）
-        {{
-            //シリアルポートチップ設定
-            comboBoxStopbit。SelectedIndex  =  0 ;
-            comboBoxDatabit。SelectedIndex  =  1 ;
-            comboBoxParity。SelectedIndex  =  0 ;
-            comboBoxLineFeedCode。SelectedIndex  =  2 ;
+        //----------------------------------------------------------------------------------
+        // MainForm 起動時の処理
+        //----------------------------------------------------------------------------------
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // シリアルポート初期設定
+            comboBoxStopbit.SelectedIndex = 0;
+            comboBoxDatabit.SelectedIndex = 1;
+            comboBoxParity.SelectedIndex = 0;
+            comboBoxLineFeedCode.SelectedIndex = 2;
 
-            //オプションリスト更新
-            deviceList_Update（）;
+            // デバイスリスト更新
+            deviceList_Update();
         }
 
-        // ------------------------------------------------ ----------------------------------
-        // MainFormウィジェット時の処理
-        // ------------------------------------------------ ----------------------------------
-        private  void  MainForm_FormClosed（オブジェクト 送信者、FormClosedEventArgs  e）
-        {{
-            //ステレオポートオープンされた
-            もし（SERIALPORT。のIsOpen  == 真）
-            {{
-                //クローズポートの
-                serialPort。閉じる（）;
+        //----------------------------------------------------------------------------------
+        // MainForm 閉じた時の処理
+        //----------------------------------------------------------------------------------
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // シリアルポートオープンされている
+            if(serialPort.IsOpen == true)
+            {
+                // シリアルポートのクローズ
+                serialPort.Close();
             }
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //メニューバー「著作権」クリック時
-        // ------------------------------------------------ ----------------------------------
-        private  void  CopyrightToolStripMenuItem_Click（オブジェクト 送信者、EventArgs  e）
-        {{
-            // CopyrightForm N
-            CopyrigthForm  copyrigthForm  =  new  CopyrigthForm（）;
-            copyrigthForm。表示（）;
+        //----------------------------------------------------------------------------------
+        // メニューバー「著作権」クリック時処理
+        //----------------------------------------------------------------------------------
+        private void CopyrightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // CopyrightFormオープン
+            CopyrigthForm copyrigthForm = new CopyrigthForm();
+            copyrigthForm.Show();
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //「オプションでき」ボタン回時処理
-        // ------------------------------------------------ ----------------------------------
-        private  void  buttonGetDevicesList_Click（オブジェクト 送信者、EventArgs  e）
-        {{
-            //オプションリスト更新
-            deviceList_Update（）;
+        //----------------------------------------------------------------------------------
+        // 「デバイス取得」ボタンクリック時処理
+        //----------------------------------------------------------------------------------
+        private void buttonGetDevicesList_Click(object sender, EventArgs e)
+        {
+            // デバイスリスト更新
+            deviceList_Update();
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //「切断」または「切断」ボタン時の切断
-        // ------------------------------------------------ ----------------------------------
-        private  void  buttonConnect_Click（オブジェクト 送信者、EventArgs  e）
-        {{
-            もし（buttonConnect。テキスト ==  "接続"）
-            {{
-                試してみてください
-                {{
-                    //コンボボックスからCOM番号取得
-                    string  buff  =  comboBoxDevices。テキスト;
-                    int  deviceComBegin  =  buff。IndexOf（'（'）;
-                    int  deviceComEnd  =  buff。IndexOf（'）'）;
-                    文字列 deviceCom  =  buff。部分文字 列（deviceComBegin +  1、deviceComEnd  -  deviceComBegin  -  1）;
+        //----------------------------------------------------------------------------------
+        // 「接続」or「切断」ボタンクリック時の処理
+        //----------------------------------------------------------------------------------
+        private void buttonConnect_Click(object sender, EventArgs e)
+        {
+            if(buttonConnect.Text == "接続")
+            {
+                try
+                {
+                    // コンボボックスからCOM番号取得
+                    string buff = comboBoxDevices.Text;
+                    int deviceComBegin = buff.IndexOf('(');
+                    int deviceComEnd = buff.IndexOf(')');
+                    string deviceCom = buff.Substring(deviceComBegin + 1, deviceComEnd - deviceComBegin - 1);
 
-                    //シリアル通信設定
-                    serialPort。PortName  =  deviceCom ;
-                    serialPort。BaudRate  =  int。パース（textBoxBaudrate。テキスト）;
-                    serialPort。DataBits  =  int。パース（comboBoxDatabit。テキスト）;
-                    もし（comboBoxStopbit。テキスト ==  " 1 "）SERIALPORT。StopBits  =  StopBits。1つ;
-                    それ以外の 場合（comboBoxStopbit。テキスト ==  " 2 "）SERIALPORT。StopBits  =  StopBits。2 ;
-                    それ以外の場合は serialPort。StopBits  =  StopBits。OnePointFive ;
-                    もし（comboBoxParity。テキスト ==  "なし"）SERIALPORT。パリティ = パリティ。なし;
-                    それ以外の 場合（comboBoxParity。テキスト ==  "奇数パリティ"）SERIALPORT。パリティ = パリティ。奇数;
-                    それ以外の場合は serialPort。パリティ = パリティ。でも;
+                    // シリアル通信設定
+                    serialPort.PortName = deviceCom;
+                    serialPort.BaudRate = int.Parse(textBoxBaudrate.Text);
+                    serialPort.DataBits = int.Parse(comboBoxDatabit.Text);
+                    if (comboBoxStopbit.Text == "1") serialPort.StopBits = StopBits.One;
+                    else if (comboBoxStopbit.Text == "2") serialPort.StopBits = StopBits.Two;
+                    else serialPort.StopBits = StopBits.OnePointFive;
+                    if (comboBoxParity.Text == "なし") serialPort.Parity = Parity.None;
+                    else if (comboBoxParity.Text == "奇数パリティ") serialPort.Parity = Parity.Odd;
+                    else serialPort.Parity = Parity.Even;
 
-                    //シリアルポートの
-                    serialPort。開く（）;
+                    // シリアルポートのオープン
+                    serialPort.Open();
                     
 
-                    //「切断」ボタンに
-                    buttonConnect。テキスト =  "切断" ;
+                    // 「切断」ボタンに切替
+                    buttonConnect.Text = "切断";
 
-                    //シリアル通信設定
-                    serialSetting_Disable（）;
+                    // シリアル通信設定 操作禁止
+                    serialSetting_Disable();
                 }
-                キャッチ
-                {{
-                    MessageBox。ショー（"シリアルポートをオープンできませんでした。"、"エラー"、MessageBoxButtons。OK、MessageBoxIcon。エラー）。
+                catch
+                {
+                    MessageBox.Show("シリアルポートをオープンできませんでした。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            そうしないと
-            {{
-                serialPort。閉じる（）;
+            else
+            {
+                serialPort.Close();
 
-                //「接続」ボタンに
-                buttonConnect。テキスト =  "連結" ;
+                // 「接続」ボタンに切替
+                buttonConnect.Text = "接続";
 
-                //シリアル通信設定
-                serialSetting_Enable（）;
+                // シリアル通信設定 操作許可
+                serialSetting_Enable();
             }
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //「送信」ボタン時時処理
-        // ------------------------------------------------ ----------------------------------
-        private  void  buttonTrans_Click（オブジェクト 送信者、EventArgs  e）
-        {{
-            serialPort。書き込み（textBoxTrans。テキスト +  lineFeedCode）。
+        //----------------------------------------------------------------------------------
+        // 「送信」ボタンクリック時処理
+        //----------------------------------------------------------------------------------
+        private void buttonTrans_Click(object sender, EventArgs e)
+        {
+            serialPort.Write(textBoxTrans.Text + lineFeedCode);
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //ボーレート設定用INTボックスキー入力時処理
-        // ------------------------------------------------ ----------------------------------
-        private  void  textBoxBaudrate_KeyPress（オブジェクト 送信者、KeyPressEventArgs  e）
-        {{
-            //数字とBSIncludeの押し説明処理
-            もし（（E。は、keyChar  <  '0'  ||  '9'  <  E。は、keyChar）&&  E。は、keyChar  ！=  ' \ B '）
-            {{
-                e。処理済み =  true ;
+        //----------------------------------------------------------------------------------
+        // ボーレート設定用テキストボックス キー入力時処理
+        //----------------------------------------------------------------------------------
+        private void textBoxBaudrate_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // 数字とBS以外の入力無視処理
+            if ((e.KeyChar < '0' || '9' < e.KeyChar) && e.KeyChar != '\b')
+            {
+                e.Handled = true;
             }
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //データデータ用INTボックスキー入力時処理
-        // ------------------------------------------------ ----------------------------------
-        private  void  textBoxTrans_KeyPress（オブジェクト 送信者、KeyPressEventArgs  e）
-        {{
-            //キーを入力します
-            もし（E。は、keyChar  ==（文字）キー。入力してください）
-            {{
-                //データを
-                serialPort。書き込み（textBoxTrans。テキスト +  lineFeedCode）。
+        //----------------------------------------------------------------------------------
+        // 送信データ用テキストボックス キー入力時処理
+        //----------------------------------------------------------------------------------
+        private void textBoxTrans_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Enterキーを押したときの処理
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // データを送信
+                serialPort.Write(textBoxTrans.Text + lineFeedCode);
 
-                //ページボックス
-                textBoxTrans。クリア（）;
-                e。処理済み =  true ;
+                // テキストボックス初期化
+                textBoxTrans.Clear();
+                e.Handled = true;
             }
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //改行コード（送信）設定用コンボボックス変更時処理
-        // ------------------------------------------------ ----------------------------------
-        private  void  comboBoxLineFeedCode_SelectedIndexChanged（オブジェクト 送信者、EventArgs  e）
-        {{
-            もし（comboBoxLineFeedCode。テキスト ==  " CR（マック系）"）             lineFeedCode  =  " \ rを" ;
-            それ以外の 場合（comboBoxLineFeedCode。テキスト ==  " LF（Unixの系）"）       lineFeedCode  =  " \ n個" ;
-            それ以外の 場合（comboBoxLineFeedCode。テキスト ==  " CRLF（Windowsの系）"）lineFeedCode  =  " \ rを\ n個" ;
-            それ以外の 場合（comboBoxLineFeedCode。テキスト ==  "なし"）               lineFeedCode  =  " " ;
+        //----------------------------------------------------------------------------------
+        // 改行コード（送信）設定用コンボボックス 変更時処理
+        //----------------------------------------------------------------------------------
+        private void comboBoxLineFeedCode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxLineFeedCode.Text == "CR（Mac系）")            lineFeedCode = "\r";
+            else if (comboBoxLineFeedCode.Text == "LF（Unix系）")      lineFeedCode = "\n";
+            else if (comboBoxLineFeedCode.Text == "CRLF（Windows系）") lineFeedCode = "\r\n";
+            else if (comboBoxLineFeedCode.Text == "なし")              lineFeedCode = "";
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //ピボットポートデータ時処理
-        // ------------------------------------------------ ----------------------------------
-        プライベート 無効 serialPort_DataReceived（オブジェクト 送信者、System.IO.Ports。SerialDataReceivedEventArgs  E）
-        {{
-            textBoxRead。appendText（SERIALPORT。ReadExisting（））。
+        //----------------------------------------------------------------------------------
+        // シリアルポート データ受信時処理
+        //----------------------------------------------------------------------------------
+        private void serialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+            textBoxRead.AppendText(serialPort.ReadExisting());
         }
 
-        // ************************************************ **********************************
-        //あり、自作関数（関数処理なし）
-        // ************************************************ **********************************
-        // ------------------------------------------------ ----------------------------------
-        //シリアル通信チップ
-        // ------------------------------------------------ ----------------------------------
-        プライベート 静的 IEnumerable <文字列> GetSerialDeviceNames（）
-        {{
-            var  pnpEntity  =  new  ManagementClass（" Win32_PnPEntity "）;
-            var  comRegex  =  new  Regex（@ " \（COM [1-9] [0-9]？[0-9]？\）"）;                  //オプション名に "（COM3）"特がててゆんを購入
+        //**********************************************************************************
+        // 以下、自作関数（イベント処理ではない）
+        //**********************************************************************************
+        //----------------------------------------------------------------------------------
+        // シリアル通信デバイス探索
+        //----------------------------------------------------------------------------------
+        private static IEnumerable<string> GetSerialDeviceNames()
+        {
+            var pnpEntity = new ManagementClass("Win32_PnPEntity");
+            var comRegex = new Regex(@"\(COM[1-9][0-9]?[0-9]?\)");                  // デバイス名に"(COM3)"などが入ってるものを探す
 
-             pnpEntityを返します
-                。GetInstances（）                                                      //コレクションを取得
-                。キャスト< ManagementObject >（）
-                。選択（managementObj  =>  managementObj。GetPropertyValue（"名前"））     //名前拾ってくる
-                。Where（nameObj  =>  nameObj  ！=  null）                                   //帯Bが逸えないものはnullにしたら見るので弾く
-                。選択（nameObj  =>  nameObj。ToStringメソッド（））                               //文字列に直し、
-                。ここで、（名前 =>  comRegex。IsMatch（名））;                             //正規表現で完了の
+            return pnpEntity
+                .GetInstances()                                                     // 一覧を取得
+                .Cast<ManagementObject>()
+                .Select(managementObj => managementObj.GetPropertyValue("Name"))    // 名前拾ってくる
+                .Where(nameObj => nameObj != null)                                  // プロパティ値が拾えないものはnullになっているので弾く
+                .Select(nameObj => nameObj.ToString())                              // 文字列に直し、
+                .Where(name => comRegex.IsMatch(name));                             // 正規表現で最後のフィルタリング
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //シリアル通信チップリスト更新
-        // ------------------------------------------------ ----------------------------------
-        private  void  deviceList_Update（）
-        {{
-            //オプションリスト更新
-            comboBoxDevices。アイテム。クリア（）;
-            foreachの（文字列 ポート で GetSerialDeviceNames（））
-            {{
-                comboBoxDevices。アイテム。追加（ポート）;
+        //----------------------------------------------------------------------------------
+        // シリアル通信デバイスリスト更新
+        //----------------------------------------------------------------------------------
+        private void deviceList_Update()
+        {
+            // デバイスリスト更新
+            comboBoxDevices.Items.Clear();
+            foreach (string Ports in GetSerialDeviceNames())
+            {
+                comboBoxDevices.Items.Add(Ports);
             }
 
-            //デバイスあり
-            もし（comboBoxDevices。アイテム。カウント ！=  0）
-            {{
-                //でしょう
-                buttonConnect。有効 =  true ;
-                comboBoxDevices。SelectedIndex  =  0 ;
+            // デバイスあり
+            if (comboBoxDevices.Items.Count != 0)
+            {
+                // 接続ボタン許可
+                buttonConnect.Enabled = true;
+                comboBoxDevices.SelectedIndex = 0;
             }
-            //デバイスなし
-            そうしないと
-            {{
-                //でしょう
-                buttonConnect。有効 =  false ;
+            // デバイスなし
+            else
+            {
+                // 接続ボタン入力禁止
+                buttonConnect.Enabled = false;
             }
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //シリアル通信設定
-        // ------------------------------------------------ ----------------------------------
-        private  void  serialSetting_Disable（）
-        {{
-            buttonGetDevicesList。有効 =  false ;
-            comboBoxDevices。有効 =  false ;
-            textBoxBaudrate。有効 =  false ;
-            comboBoxStopbit。有効 =  false ;
-            comboBoxDatabit。有効 =  false ;
-            comboBoxParity。有効 =  false ;
+        //----------------------------------------------------------------------------------
+        // シリアル通信設定 操作禁止
+        //----------------------------------------------------------------------------------
+        private void serialSetting_Disable()
+        {
+            buttonGetDevicesList.Enabled = false;
+            comboBoxDevices.Enabled = false;
+            textBoxBaudrate.Enabled = false;
+            comboBoxStopbit.Enabled = false;
+            comboBoxDatabit.Enabled = false;
+            comboBoxParity.Enabled = false;
 
-            //シリアルポート販売
-            textBoxTrans。有効 =  true ;
-            buttonTrans。有効 =  true ;
+            // シリアルポート送信関係
+            textBoxTrans.Enabled = true;
+            buttonTrans.Enabled = true;
         }
 
-        // ------------------------------------------------ ----------------------------------
-        //シリアル通信設定
-        // ------------------------------------------------ ----------------------------------
-        private  void  serialSetting_Enable（）
-        {{
-            buttonGetDevicesList。有効 =  true ;
-            comboBoxDevices。有効 =  true ;
-            textBoxBaudrate。有効 =  true ;
-            comboBoxStopbit。有効 =  true ;
-            comboBoxDatabit。有効 =  true ;
+        //----------------------------------------------------------------------------------
+        // シリアル通信設定 操作許可
+        //----------------------------------------------------------------------------------
+        private void serialSetting_Enable()
+        {
+            buttonGetDevicesList.Enabled = true;
+            comboBoxDevices.Enabled = true;
+            textBoxBaudrate.Enabled = true;
+            comboBoxStopbit.Enabled = true;
+            comboBoxDatabit.Enabled = true;
 
-            //シリアルポート販売
-            textBoxTrans。有効 =  false ;
-            buttonTrans。有効 =  false ;
+            // シリアルポート送信関係
+            textBoxTrans.Enabled = false;
+            buttonTrans.Enabled = false;
         }
     }
 }
 
-// ------------------------------------------------ ------------------------------------------
-//ファイルの終わり
-// ------------------------------------------------ ------------------------------------------
+//------------------------------------------------------------------------------------------
+// end of file
+//------------------------------------------------------------------------------------------
