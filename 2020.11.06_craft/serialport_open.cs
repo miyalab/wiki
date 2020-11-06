@@ -149,7 +149,7 @@ serialSetting_Enable();
 //----------------------------------------------------------------------------------
 private void buttonTrans_Click(object sender, EventArgs e)
 {
-serialPort.Write(textBoxTrans.Text + lineFeedCode);
+    serialPort.Write(textBoxTrans.Text + lineFeedCode);
 }
 
 //----------------------------------------------------------------------------------
@@ -157,11 +157,11 @@ serialPort.Write(textBoxTrans.Text + lineFeedCode);
 //----------------------------------------------------------------------------------
 private void textBoxBaudrate_KeyPress(object sender, KeyPressEventArgs e)
 {
-// 数字とBS以外の入力無視処理
-if ((e.KeyChar < '0' || '9' < e.KeyChar) && e.KeyChar != '\b')
-{
-e.Handled = true;
-}
+    // 数字とBS以外の入力無視処理
+    if ((e.KeyChar < '0' || '9' < e.KeyChar) && e.KeyChar != '\b')
+    {
+        e.Handled = true;
+    }
 }
 
 //----------------------------------------------------------------------------------
@@ -169,16 +169,16 @@ e.Handled = true;
 //----------------------------------------------------------------------------------
 private void textBoxTrans_KeyPress(object sender, KeyPressEventArgs e)
 {
-// Enterキーを押したときの処理
-if (e.KeyChar == (char)Keys.Enter)
-{
-// データを送信
-serialPort.Write(textBoxTrans.Text + lineFeedCode);
+    // Enterキーを押したときの処理
+    if (e.KeyChar == (char)Keys.Enter)
+    {
+        // データを送信
+        serialPort.Write(textBoxTrans.Text + lineFeedCode);
 
-// テキストボックス初期化
-textBoxTrans.Clear();
-e.Handled = true;
-}
+        // テキストボックス初期化
+        textBoxTrans.Clear();
+        e.Handled = true;
+    }
 }
 
 //----------------------------------------------------------------------------------
@@ -186,10 +186,10 @@ e.Handled = true;
 //----------------------------------------------------------------------------------
 private void comboBoxLineFeedCode_SelectedIndexChanged(object sender, EventArgs e)
 {
-if (comboBoxLineFeedCode.Text == "CR（Mac系）")            lineFeedCode = "\r";
-else if (comboBoxLineFeedCode.Text == "LF（Unix系）")      lineFeedCode = "\n";
-else if (comboBoxLineFeedCode.Text == "CRLF（Windows系）") lineFeedCode = "\r\n";
-else if (comboBoxLineFeedCode.Text == "なし")              lineFeedCode = "";
+    if (comboBoxLineFeedCode.Text == "CR（Mac系）")            lineFeedCode = "\r";
+    else if (comboBoxLineFeedCode.Text == "LF（Unix系）")      lineFeedCode = "\n";
+    else if (comboBoxLineFeedCode.Text == "CRLF（Windows系）") lineFeedCode = "\r\n";
+    else if (comboBoxLineFeedCode.Text == "なし")              lineFeedCode = "";
 }
 
 //----------------------------------------------------------------------------------
@@ -197,7 +197,7 @@ else if (comboBoxLineFeedCode.Text == "なし")              lineFeedCode = "";
 //----------------------------------------------------------------------------------
 private void serialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
 {
-textBoxRead.AppendText(serialPort.ReadExisting());
+    textBoxRead.AppendText(serialPort.ReadExisting());
 }
 
 //**********************************************************************************
